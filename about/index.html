@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+
+<html lang = "en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About me | Shikhar Bhardwaj</title>
+    <meta name="description" content="Hi! I am an earthling who likes to solve problems with code and ♥. 
+">
+    <meta name="keywords" content="shikhar bhardwaj bluefog">
+</head>
+
+<body>
+<div id = "blanket">
+  <div id = "wrapper">
+    <div id = "terminal">
+      <span class = "prompt"><span style="color:rgba(42,127,184,1);">bluefog</span>@<span style="color:rgba(46,205,112,1);">work</span>:~$&nbsp;</span><span id="command">▌</span>
+      <br/>
+    </div>
+  </div>
+  <div class = "nojs">
+    <div id = "manpage"> <div style = "text-align:center;">
+        <span style="float:left;opacity:0.75;">SHIKHAR(1)</span><span>Manual</span><span style="float:right;opacity:0.75;">SHIKHAR(1)</span>
+      </div>
+      <br>
+      <span class = "section">NAME</span>
+      <br>
+      <span class = "content">Shikhar Bhardwaj - Just another absent-minded code brewing human in Cyberspace&trade;</span>
+      <br>
+      <span class = "section">ALIASES</span>
+      <br>
+      <span class = "content">bluefog</span>
+      <br>
+      <span class = "section">Description</span>
+      <br>
+      <span class = "content">A guy from India who likes to tinker with computers. Knows a thing or two about C++, algorithms and website design.
+        <br> Currently a somophore studying Mathematics and Computing Engineering at Delhi Technological University.
+      </span>
+      <br>
+      <span class = "section">Arguments</span>
+      <br>
+      <span class = "content">Don't</span>
+      <br>
+      <span class = "section">Examples</span>
+      <br>
+      <span class = "content">Have a look here : 
+        <ul id = "work">
+          <li><a href = "https://github.com/shikharbhardwaj">GitHub</a> : Some
+              open source projects</li>
+          <li><a href = "https://bitbucket.org/blufog/">Bitbucket</a> : Private
+              projects and repos</li>
+          <li><a href = "https://stackoverflow.com/users/3986235/bluefog">StackOverflow</a> : Mostly answers C++, jS, HTML or CSS questions and often visits the Lounge&lt;C++&gt;</li>
+        </ul>
+      </span>
+      <span class = "section">Bugs</span>
+      <br>
+      <span class = "content">Probably</span>
+      <br>
+      <span class = "section">This website</span>
+      <br>
+      <span class = "content">
+          Generated using <a href = "https://jekyllrb.com">Jekyll</a>. Design
+          inspired from <a href = "http://html5up.net/identity">Identity |
+              HTML5UP</a>. Solarized colorscheme by <a href =
+              "http://ethanschoonover.com/solarized">Ethan Schoonover</a>.
+      </span>
+      <br>
+      <span class = "content nav-footer" style="float:right; margin-right:25px;">
+        <a href = "../">Go home</a>
+        <a href = "../posts/">Learn something</a>
+        <a href = "../projects"> My projects</a>
+      </span>
+      <br>
+    </div>
+  </div>
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/foundation.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/solarized-dark.min.css">
+<link rel="canonical" href="https://shikharbhardwaj.me/about/">
+<link rel="alternate" type="application/rss+xml" title="Shikhar Bhardwaj | bluefog" href="https://shikharbhardwaj.me/feed.xml">
+
+    <link rel="stylesheet" href="/css/about.css">
+
+<script type="text/javascript" charset="utf-8" src="/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/foundation.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/plugins/CSSPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/easing/EasePack.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+  <script type="text/javascript" charset="utf-8">
+    var req = "man bluefog";
+    var i = 0;
+    var t, v;
+    $(function(){
+      $('.nojs').css("display", "none");
+      $('#terminal').show();
+      setTimeout(function(){
+          t = setInterval(startTyping, 150);
+          v = setInterval(startTyping, 400);
+        }, 1500);
+      function startTyping(){
+        if(i < req.length){
+          var exist = $("#command").text();
+          var cursor = exist[exist.length - 1];
+          exist = req.substring(0,i + 1);
+          $('#command').text(exist + cursor.toString());
+          i++;
+        }
+        else if(i >= req.length && i < req.length + 3){
+          //We chill
+          i++;
+        }
+        else{
+          clearInterval(t);
+          clearInterval(v);
+          showManpage();
+        }
+      }
+      function showManpage(){
+        $('#terminal').hide();
+        $('.nojs').show();
+      }
+    });
+  </script>

@@ -1,0 +1,476 @@
+@font-face{
+    font-family: main;
+    src:url("font/roboto/Robotor.ttf");
+}
+@font-face{
+    font-family: head;
+    src:url("font/roboto/Robotot.ttf");
+}
+@media screen and (min-width: 1025px) and (min-height: 550px) and (max-width:2500px){
+    #side{
+        position: relative;
+        display: inline-block;
+        top: -40px;
+        width: 50%;
+        height: 70%;
+    }
+    body{
+        overflow:hidden;
+        font-family: main;
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        width: 100%;
+        height: 101%;
+        cursor: default;
+        -webkit-user-select:none;
+        user-select:none;
+    }
+    .footer {
+        position: relative;
+        top:0%;
+        height: 19%;
+        background: rgba(0,0,0,0.078);
+        color: #fff;
+    }
+    .panel{
+        background: rgba(239,62,51,0.83);
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 80%;
+    }
+    a{
+        color: #000;
+        text-decoration: none;
+        margin:10px;
+        padding: 5px;
+        height: 100%;
+        font-family: tahoma;
+        position:relative;
+        right: -63%;
+        z-index: 1;
+        background: transparent;
+        display: inline-block;
+    }
+    .viewport{
+        position: fixed;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        margin: 0;
+    }
+    a::before {
+        top: 0;
+        right: 1%;
+        width: 106%;
+        height: 2px;
+        background: rgba(123,191,106,0.95);
+    }
+
+    #remain {
+        color: #fff;
+        background:rgba(123,191,106,0.95); 
+        position: relative;
+        text-align: center;
+        display: inline-block;
+        width: 83px;
+        height: 21px;
+        padding: 20px;
+        width: fixed;
+    }
+    .counter{
+        position: relative;
+        float: right;
+        right: 16.1%;
+        top: -220px;
+    }
+    .logo {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 550px;
+        height: 230px;
+    }
+    .int {
+        display: inline-block;
+        left: 6%;
+        position: relative;
+        top: -46%;
+        font-size: 70px;
+        font-family: head;
+        color: #fff;
+    }
+    .img1 {
+        display: inline-block;
+    }
+    a::after {
+        width: 106%;
+        height: 2px;
+        top: 100%;
+        left: -7%;
+        background: rgba(239,62,51,0.83);
+    }
+    a::before, a::after {
+        position: absolute;
+        content: '';
+        -webkit-transition: all 0.3s;
+        -moz-transition: all 0.3s;
+        transition: all 0.3s;
+        pointer-events: none;
+        z-index: 0;
+    }
+    a:hover::before, a:focus::before {
+        top: 30px;
+    }
+    a:hover::after, a:focus::after {
+        top: 0;
+    }
+    .counter{
+        border: 1px dashed white;
+        padding: 20px;
+        margin-top:20px;
+        text-align: center;
+    }
+    .counter h2{
+        font-family: head;
+        color: black;
+    }
+    .counter h2 span{
+        color: white;
+        font-family: main;
+        font-weight: lighter;
+    }
+    .links{
+        position: relative;
+        bottom: 0%;
+        margin: 0;
+        border-bottom: 1px solid rgba(0,0,0,0.2);
+        background: #fff;
+    }
+    img{
+        user-drag:none;
+        -webkit-user-drag:none;
+        -moz-user-drag:none;
+        -o-user-drag:none;
+    }
+    #sp{
+        position: relative;
+        left: 10px;
+        bottom: 20px;
+        font-weight: 800;
+    }
+    #remain span{
+        color: black;
+    }
+    #overlay{
+        display: none;
+    }
+    #switch{
+        display: none;
+    }
+}
+/*For tablets*/
+@media only screen and (min-width : 481px ) and (max-width : 1024px){
+    #side{
+        position: relative;
+        display: inline-block;
+        width: 60%;
+    }
+    body{
+        position: absolute;
+        overflow-x: hidden;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: main;
+        cursor: default;
+        -webkit-user-select:none;
+        z-index: 0;
+    }
+    .viewport{
+        position: relative;
+        width: 100%;     
+        height: 100%;
+        overflow-x:hidden;
+        z-index: 2;
+        margin: 0;
+        background: rgba(0,0,0,0);
+    }
+    .panel{
+        background: rgba(239,62,51,0.83);
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 89%;
+    }
+    .img1{
+        position: relative;
+        height: 50%;
+        top: -5%;
+        display: inline-block;
+    }
+    .int{
+        width: 40%;
+        position: relative;
+        display: inline-block;
+        float: right;
+        right: 20%;
+    }
+    .logo{
+        display: inline-block;
+        position: relative;
+        width: 100%;
+    }
+    .links a{
+        top:0%;
+        position: relative;
+        display: block;
+        color: rgba(0,0,0,0.7);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0;
+        margin: 5px;
+        padding: 20px;
+        border-top: 1px solid white;
+        border-bottom: 1px solid white;
+    }
+    .links{
+        position: fixed;
+        z-index: 500;
+        height: 100%;
+        left:-49px;
+        top: 0;
+        background: white;
+    }
+    h1{
+        margin: 0;
+    }
+    #switch{
+        position: relative;
+        display: inline-block;
+        font-family: main;
+        color: rgba(239,62,51,0.83);
+        font-size: 32px;
+        top:-25px;
+        padding: 5px;
+        padding-bottom: 35px;
+        background: white;
+        font-weight: 800;
+        left: 50px;
+        transform:rotate(90deg);
+    }
+    .links #home{
+        background-image: url("../inc/linkh.png");
+        background-repeat: no-repeat;
+    }
+    .links #events{
+        background-image: url("../inc/linke.png");
+        background-repeat: no-repeat;   
+    }
+    .links #updates{
+        background-image: url("../inc/linku.png");
+        background-repeat: no-repeat;   
+    }
+    .links #reg{
+        background-image: url("../inc/linkr.png");
+        background-repeat: no-repeat;      
+    }
+    .links #det{
+        background-image: url("../inc/linkd.png");
+        background-repeat: no-repeat;         
+    }
+    #overlay{
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        display: none;
+        z-index: 99;
+        background-color: rgba(0,0,0,0.6);
+    }
+    #remain {
+        color: #fff;
+        background:rgba(123,191,106,0.95); 
+        position: relative;
+        text-align: center;
+        display: inline-block;
+        font-size: 12px;
+        width: 17.5%;
+        height: 21px;
+        padding: 3%;
+        width: fixed;
+    }
+    .counter{
+        position: relative;
+        float: right;
+        top:10%;
+        left:5%;
+    }
+    .counter{
+        border: 1px dashed white;
+        padding: 20px;
+        margin-top:15%;
+        text-align: center;
+    }
+    .counter h2{
+        font-family: head;
+        color: black;
+    }
+    .counter h2 span{
+        color: white;
+        font-family: main;
+        font-weight: lighter;
+    }
+    #remain{
+        font-size: 9px;
+    }
+    #remain span{
+        color: black;
+        font-size: 9px;
+    }
+}
+/*Smartphones */
+@media only screen and (min-width : 320px) and (max-width : 700px) {
+    body{
+        position: absolute;
+        overflow-x: hidden;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: main;
+        cursor: default;
+        -webkit-user-select:none;
+        z-index: 0;
+    }
+    #viewport{
+        position: relative;
+        width: 100%;     
+        height: 100%;
+        overflow-x:hidden;
+        z-index: 2;
+        margin: 0;
+        background: rgba(0,0,0,0);
+    }
+    .panel{
+        background: rgba(239,62,51,0.83);
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 98%;
+    }
+    .img1{
+        position: relative;
+        left:20%;
+        height: 40%;
+        top: -5%;
+    }
+    .links a{
+        top:20%;
+        position: relative;
+        display: block;
+        color: rgba(0,0,0,0.7);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0;
+        margin: 5px;
+        padding: 20px;
+        border-top: 1px solid white;
+        border-bottom: 1px solid white;
+    }
+    .links{
+        position: fixed;
+        z-index: 500;
+        height: 100%;
+        left:-49px;
+        top: 0;
+        background: white;
+    }
+    h1{
+        margin: 0;
+    }
+    #switch{
+        position: relative;
+        display: inline-block;
+        font-family: main;
+        color: rgba(239,62,51,0.83);
+        font-size: 32px;
+        top:-25px;
+        padding: 5px;
+        padding-bottom: 35px;
+        background: white;
+        font-weight: 800;
+        left: 50px;
+        transform:rotate(90deg);
+    }
+    .links #home{
+        background-image: url("../inc/linkh.png");
+        background-repeat: no-repeat;
+    }
+    .links #events{
+        background-image: url("../inc/linke.png");
+        background-repeat: no-repeat;   
+    }
+    .links #updates{
+        background-image: url("../inc/linku.png");
+        background-repeat: no-repeat;   
+    }
+    .links #reg{
+        background-image: url("../inc/linkr.png");
+        background-repeat: no-repeat;      
+    }
+    .links #det{
+        background-image: url("../inc/linkd.png");
+        background-repeat: no-repeat;         
+    }
+    #overlay{
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        display: none;
+        z-index: 99;
+        background-color: rgba(0,0,0,0.6);
+    }
+    .logo{
+        width: 100%;
+    }
+    h2{
+        text-align: center;
+    }
+    .counter span{
+        color: white;
+    }
+    .day,.hour,.minute,.second{
+        display: inline-block;
+        text-align: center;
+        font-size: 14px;
+        width: 24%;
+        height: 30%;
+        background-color: rgba(123,191,106,0.95);
+    }
+    .day span,.hour span,.minute span,.second span{
+        color: black;
+    }
+    .footer{
+        text-align: center;
+    }
+    .counter{
+        position: relative;
+        left: 0;
+        margin: 0 auto 0 auto;
+    }
+}

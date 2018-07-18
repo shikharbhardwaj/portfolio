@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shikhar Bhardwaj | bluefog</title>
+    <description>Hi! I am an earthling who likes to solve problems with code and ♥. 
+</description>
+    <link>https://shikharbhardwaj.me/</link>
+    <atom:link href="https://shikharbhardwaj.me/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 18 Jul 2018 15:33:47 +0000</pubDate>
+    <lastBuildDate>Wed, 18 Jul 2018 15:33:47 +0000</lastBuildDate>
+    <generator>Jekyll v3.1.6</generator>
+    
+      <item>
+        <title>M is for measure</title>
+        <description>&lt;p&gt;The first principle of performance benchmarking is to &lt;strong&gt;measure&lt;/strong&gt;. Knowing your
+current level of performance and setting goals is essential to
+writing performant software on any platform.
+This article is to guide you through setting up &lt;code class=&quot;highlighter-rouge&quot;&gt;perf&lt;/code&gt; on Linux and using it to
+measure stuff.&lt;/p&gt;
+&lt;div id=&quot;setup&quot; class=&quot;post-section&quot;&gt;Setup&lt;/div&gt;
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;linux-tools&lt;/code&gt; package has the &lt;code class=&quot;highlighter-rouge&quot;&gt;perf&lt;/code&gt; tool. It is usually present in almost
+every distribution because the code is part of the Linux source tree.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Ubuntu &amp;amp; Debian&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For &lt;code class=&quot;highlighter-rouge&quot;&gt;Ubuntu&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Debian&lt;/code&gt; users, use &lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get&lt;/code&gt; to install the package.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;CAUTION&lt;/strong&gt;: As of now, the Ubuntu package on Xenial Xerus(16.04) does not have
+&lt;code class=&quot;highlighter-rouge&quot;&gt;libunwind&lt;/code&gt; support. If you want C++ symbols to be demangled within perf, skip
+this part and follow the steps to compile &lt;code class=&quot;highlighter-rouge&quot;&gt;perf&lt;/code&gt; manually with proper
+dependencies.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;shell&quot;&gt;$ sudo apt-get install linux-tools-generic&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Fedora&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;shell&quot;&gt;$ sudo yum install perf&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div id=&quot;missing-libunwind&quot; class=&quot;post-section&quot;&gt;Fixing missing
+libunwind&lt;/div&gt;
+
+&lt;p&gt;According to &lt;a href=&quot;https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1248289&quot;&gt;this&lt;/a&gt; bug report, the &lt;code class=&quot;highlighter-rouge&quot;&gt;perf&lt;/code&gt; on Ubuntu 16.04 is not compiled with
+&lt;code class=&quot;highlighter-rouge&quot;&gt;libunwind&lt;/code&gt; support. The library is responsible for demangling C++ names in the
+program binary to the source names.&lt;/p&gt;
+
+&lt;p&gt;To fix this, we need to compile our version of &lt;code class=&quot;highlighter-rouge&quot;&gt;perf&lt;/code&gt;.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Install dependencies:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;shell&quot;&gt;$ sudo apt-get install libiberty-dev
+ binutils-dev&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Make a directory and enter it:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;shell&quot;&gt;$ mkdir ~/install &amp;amp;&amp;amp; cd ~/install&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Get the source and build dependencies:&lt;/p&gt;
+
+    &lt;p&gt;This will download the Linux source tree(around 140MB), and some
+ dependencies.&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;shell&quot;&gt;$ apt-get source linux-tools-`uname -r`&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;shell&quot;&gt;$ sudo apt-get build-dep linux-tools-`uname -r`&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Go to &lt;code class=&quot;highlighter-rouge&quot;&gt;perf&lt;/code&gt; source code:&lt;/p&gt;
+
+    &lt;p&gt;It is located in &lt;code class=&quot;highlighter-rouge&quot;&gt;linux-x.y.z/tools/perf&lt;/code&gt;, x, y and z are integers depending
+ on your version of the Linux kernel.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Resolve dependencies and compile&lt;/p&gt;
+
+    &lt;p&gt;When in the &lt;code class=&quot;highlighter-rouge&quot;&gt;perf&lt;/code&gt; directory, execute&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;shell&quot;&gt;$ make&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;It will check for dependencies and report missing ones.&lt;/p&gt;
+
+    &lt;p&gt;Cancel the build process and install the missing stuff.&lt;/p&gt;
+
+    &lt;p&gt;After resolving dependencies, compile the tool by running &lt;code class=&quot;highlighter-rouge&quot;&gt;make&lt;/code&gt; again.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Setup the binary&lt;/p&gt;
+
+    &lt;p&gt;Go to a path which is added to your $PATH environment variable and make a
+ symbolic link to the built binary. To verify, open terminal and type&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;shell&quot;&gt;$ which perf&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;It should report the path where you kept the symbolic link(or the binary).&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div id=&quot;measure&quot; class=&quot;post-section&quot;&gt;Measuring with perf&lt;/div&gt;
+
+&lt;p&gt;Read the &lt;a href=&quot;https://perf.wiki.kernel.org/index.php/Tutorial&quot;&gt; perf wiki &lt;/a&gt; to
+get a thorough introduction to the tool from its authors.&lt;/p&gt;
+
+&lt;p&gt;Another important resource for C++ users is Chandler Carruth’s talk at
+CppCon 2015 on &lt;a href=&quot;https://www.youtube.com/watch?v=nXaxk27zwlk&quot;&gt;Tuning C++&lt;/a&gt;.&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 31 May 2016 18:00:39 +0000</pubDate>
+        <link>https://shikharbhardwaj.me/2016/05/31/using-perf.html</link>
+        <guid isPermaLink="true">https://shikharbhardwaj.me/2016/05/31/using-perf.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Setting up a development environment</title>
+        <description>&lt;p&gt;If you want to dive into programming, you need to be able to set up a completely
+reproducible development environment which complements you as a programmer. It is
+like a workman’s toolbox. As one gains experience, the choices for the tools 
+change and new tools come into the environment in place of others. This page 
+will keep the current environment I use for programming on my machine.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;If you just want the files, have a look at my 
+&lt;a href=&quot;https://github.com/shikharbhardwaj/dotfiles&quot;&gt;dotfiles&lt;/a&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;It has configs separated out into folders for each tool. However, I suggest you
+ not to copy all the settings, but have a look and see which changes make your 
+ config better.&lt;/p&gt;
+
+&lt;div id=&quot;choices&quot; class=&quot;post-section&quot;&gt;Choices&lt;/div&gt;
+&lt;p&gt;I use Ubuntu as the OS of choice for my development machine, as it has most of 
+the tools available and working, in addition to good hardware support and a large
+community of users. I use &lt;code class=&quot;highlighter-rouge&quot;&gt;vim&lt;/code&gt; as my text editor in the terminal and &lt;code class=&quot;highlighter-rouge&quot;&gt;gvim&lt;/code&gt; as
+the GUI-based editor for most of my work. Enough experience (and plugins) with 
+vim has been enough for me to easily surpass any modern day IDE for most tasks 
+for now.&lt;/p&gt;
+
+&lt;p&gt;I have recently switched to &lt;code class=&quot;highlighter-rouge&quot;&gt;zsh&lt;/code&gt; as the shell of my choice for its superior 
+completion support and plugin ecosystem. &lt;del&gt;The default terminal emulator 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;gnome-terminal&lt;/code&gt; is good enough.&lt;/del&gt; I use &lt;code class=&quot;highlighter-rouge&quot;&gt;lxterminal&lt;/code&gt; as my terminal emulator because it is super smooth. &lt;code class=&quot;highlighter-rouge&quot;&gt;tmux&lt;/code&gt; as a terminal multiplexer works really 
+well.&lt;/p&gt;
+
+&lt;p&gt;For small projects, &lt;code class=&quot;highlighter-rouge&quot;&gt;make&lt;/code&gt; + &lt;code class=&quot;highlighter-rouge&quot;&gt;cmake&lt;/code&gt; works well enough as a build system. When
+needed, I use &lt;code class=&quot;highlighter-rouge&quot;&gt;ninja&lt;/code&gt; as the other build system.&lt;/p&gt;
+
+&lt;p&gt;Other stuff include : &lt;code class=&quot;highlighter-rouge&quot;&gt;ctags&lt;/code&gt;, compilers and interpreters for the languages I 
+use, some commonly used libraries like &lt;code class=&quot;highlighter-rouge&quot;&gt;boost&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div id=&quot;vim&quot; class=&quot;post-section&quot;&gt;Vim&lt;/div&gt;
+&lt;p&gt;Setting up &lt;code class=&quot;highlighter-rouge&quot;&gt;vim&lt;/code&gt; should be a journey. A journey through the woods of the
+endless features that this wonderful text editor(and its plugin system) bestows
+upon mere mortals such as us. I am sorry now I will stop with this nonsense.
+However, I suggest that you spend time with your vim config and find the
+settings which suit your style. &lt;code class=&quot;highlighter-rouge&quot;&gt;vim&lt;/code&gt; has a learning curve associated with it,
+and if you don’t want to spend time learning, you can try other text editors
+like &lt;code class=&quot;highlighter-rouge&quot;&gt;sublime&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;atom&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The basic idea of configuring &lt;code class=&quot;highlighter-rouge&quot;&gt;vim&lt;/code&gt; is that you have a directory &lt;code class=&quot;highlighter-rouge&quot;&gt;.vim&lt;/code&gt; under
+your home folder, having a file named &lt;code class=&quot;highlighter-rouge&quot;&gt;vimrc&lt;/code&gt; which has the settings that you
+need for the text editor. The plugins get copied into a &lt;code class=&quot;highlighter-rouge&quot;&gt;plugin&lt;/code&gt; subdirectory.
+Usually, you do not need to take care of the directory structure as cloning a
+plugin brings in the structure.&lt;/p&gt;
+
+&lt;p&gt;The list of some plugins I use :&lt;/p&gt;
+
+&lt;p&gt;       - &lt;b&gt;&lt;a href=&quot;https://github.com/VundleVim/Vundle.vim&quot;&gt; Vundle &lt;/a&gt;&lt;/b&gt; : as a plugin manager &lt;br /&gt;
+       - &lt;b&gt;&lt;a href=&quot;https://github.com/SirVer/ultisnips&quot;&gt; UltiSnips &lt;/a&gt;&lt;/b&gt; : Useful code snippets &lt;br /&gt;
+       - &lt;b&gt;&lt;a href=&quot;https://github.com/kien/ctrlp.vim&quot;&gt; ctrlp.vim &lt;/a&gt;&lt;/b&gt; : as a fuzzy file finder &lt;br /&gt;
+       - &lt;b&gt;&lt;a href=&quot;https://github.com/scrooloose/nerdcommenter&quot;&gt; NERD Commenter &lt;/a&gt;&lt;/b&gt; : comment toggle &lt;br /&gt;
+       - &lt;b&gt;&lt;a href=&quot;https://github.com/scrooloose/nerdtree&quot;&gt; NERD Tree &lt;/a&gt;&lt;/b&gt; : as a file explorer &lt;br /&gt;
+       - &lt;b&gt;&lt;a href=&quot;https://github.com/tpope/vim-fugitive&quot;&gt; fugitive &lt;/a&gt;&lt;/b&gt; : git support &lt;br /&gt;
+       - &lt;b&gt;&lt;a href=&quot;https://github.com/itchyny/lightline.vim&quot;&gt; lightline &lt;/a&gt;&lt;/b&gt; : beautiful status line &lt;br /&gt;
+       - &lt;b&gt;&lt;a href=&quot;https://github.com/majutsushi/tagbar&quot;&gt; tagbar &lt;/a&gt;&lt;/b&gt; : Scope based tag navigation&lt;br /&gt;
+       - &lt;b&gt;&lt;a href=&quot;https://github.com/Valloric/YouCompleteMe&quot;&gt; YouCompleteMe &lt;/a&gt;&lt;/b&gt; : awesome semantic completion for C-like languages&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Over time my &lt;code class=&quot;highlighter-rouge&quot;&gt;vimrc&lt;/code&gt; has accumulated some custom functionality.
+This stuff helps out only if you are aware of it. So experiment with key
+bindings and find what makes you faster.&lt;/p&gt;
+
+&lt;p&gt;Configuring individual plugins like &lt;code class=&quot;highlighter-rouge&quot;&gt;YCM&lt;/code&gt; is also something that comes with
+using &lt;code class=&quot;highlighter-rouge&quot;&gt;vim&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div id=&quot;term&quot; class=&quot;post-section&quot;&gt;Terminal&lt;/div&gt;
+
+&lt;p&gt;Install &lt;code class=&quot;highlighter-rouge&quot;&gt;zsh&lt;/code&gt; and use &lt;code class=&quot;highlighter-rouge&quot;&gt;Oh My Zsh&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To get a better colorscheme in the terminal, Google for “colorschemes for
+gnome-terminal” and choose the one which you like.&lt;/p&gt;
+
+&lt;p&gt;For LXTerminal, source the following script from your &lt;code class=&quot;highlighter-rouge&quot;&gt;~/.zshrc&lt;/code&gt; to get a 
+solarized colorscheme.&lt;/p&gt;
+
+&lt;p&gt;In your &lt;code class=&quot;highlighter-rouge&quot;&gt;zshrc&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;SOLARIZED=&quot;$HOME/custom/scripts/solarized.sh&quot;
+COLOR_SCHEME=&quot;$SOLARIZED&quot;
+[[ -s $COLOR_SCHEME ]] &amp;amp;&amp;amp; source $COLOR_SCHEME
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In &lt;code class=&quot;highlighter-rouge&quot;&gt;$HOME/custom/scripts/solarized.sh&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;#!/bin/sh
+# Colorscheme : Ethan Schoonover(http://ethanshoonover.com)
+# Original script for base-16 shell by : Chris Kempson (http://chriskempson.com)
+# Adapted by : Shikhar Bhardwaj(http://bluefog.me)
+
+if [ &quot;${TERM%%-*}&quot; = &#39;linux&#39; ]; then
+    # This script doesn&#39;t support linux console (use &#39;vconsole&#39; template instead)
+    return 2&amp;gt;/dev/null || exit 0
+fi
+
+color00=&quot;07/36/42&quot; # Base 00 - Black
+color01=&quot;dc/32/2f&quot; # Base 08 - Red
+color02=&quot;85/99/00&quot; # Base 0B - Green
+color03=&quot;b5/89/00&quot; # Base 0A - Yellow
+color04=&quot;26/8b/d2&quot; # Base 0D - Blue
+color05=&quot;d3/36/82&quot; # Base 0E - Magenta
+color06=&quot;2a/a1/98&quot; # Base 0C - Cyan
+color07=&quot;ee/e8/d5&quot; # Base 05 - White
+color08=&quot;00/2b/36&quot; # Base 03 - Bright Black
+
+color09=&quot;cb/4b/16&quot; # Base 08 - Bright Red
+color10=&quot;58/6e/75&quot; # Base 0B - Bright Green
+color11=&quot;62/62/62&quot; # Base 0A - Bright Yellow
+color12=&quot;83/94/96&quot; # Base 0D - Bright Blue
+color13=&quot;f9/55/8b&quot; # Base 0E - Bright Magenta
+color14=&quot;93/a1/a1&quot; # Base 0C - Bright Cyan
+
+color15=&quot;fd/f6/e3&quot; # Base 07 - Bright White
+color16=&quot;dc/96/56&quot; # Base 09
+color17=&quot;a1/69/46&quot; # Base 0F
+color18=&quot;28/28/28&quot; # Base 01
+color19=&quot;38/38/38&quot; # Base 02
+color20=&quot;b8/b8/b8&quot; # Base 04
+color21=&quot;e8/e8/e8&quot; # Base 06
+color_foreground=$color07 # Base 05
+color_background=$color12 # Base 00
+color_cursor=&quot;d8/d8/d8&quot; # Base 05
+
+if [ -n &quot;$TMUX&quot; ]; then
+  # tell tmux to pass the escape sequences through
+  # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
+  printf_template=&quot;\033Ptmux;\033\033]4;%d;rgb:%s\007\033\\&quot;
+  printf_template_var=&quot;\033Ptmux;\033\033]%d;rgb:%s\007\033\\&quot;
+  printf_template_custom=&quot;\033Ptmux;\033\033]%s%s\007\033\\&quot;
+elif [ &quot;${TERM%%-*}&quot; = &quot;screen&quot; ]; then
+  # GNU screen (screen, screen-256color, screen-256color-bce)
+  printf_template=&quot;\033P\033]4;%d;rgb:%s\007\033\\&quot;
+  printf_template_var=&quot;\033P\033]%d;rgb:%s\007\033\\&quot;
+  printf_template_custom=&quot;\033P\033]%s%s\007\033\\&quot;
+else
+  printf_template=&quot;\033]4;%d;rgb:%s\033\\&quot;
+  printf_template_var=&quot;\033]%d;rgb:%s\033\\&quot;
+  printf_template_custom=&quot;\033]%s%s\033\\&quot;
+fi
+
+# 16 color space
+printf $printf_template 0  $color00
+printf $printf_template 1  $color01
+printf $printf_template 2  $color02
+printf $printf_template 3  $color03
+printf $printf_template 4  $color04
+printf $printf_template 5  $color05
+printf $printf_template 6  $color06
+printf $printf_template 7  $color07
+printf $printf_template 8  $color08
+printf $printf_template 9  $color09
+printf $printf_template 10 $color10
+printf $printf_template 11 $color11
+printf $printf_template 12 $color12
+printf $printf_template 13 $color13
+printf $printf_template 14 $color14
+printf $printf_template 15 $color15
+
+# 256 color space
+printf $printf_template 16 $color16
+printf $printf_template 17 $color17
+printf $printf_template 18 $color18
+printf $printf_template 19 $color19
+printf $printf_template 20 $color20
+printf $printf_template 21 $color21
+
+# foreground / background / cursor color
+if [ -n &quot;$ITERM_SESSION_ID&quot; ]; then
+  # iTerm2 proprietary escape codes
+  printf $printf_template_custom Pg d8d8d8 # forground
+  printf $printf_template_custom Ph 181818 # background
+  printf $printf_template_custom Pi d8d8d8 # bold color
+  printf $printf_template_custom Pj 383838 # selection color
+  printf $printf_template_custom Pk d8d8d8 # selected text color
+  printf $printf_template_custom Pl d8d8d8 # cursor
+  printf $printf_template_custom Pm 181818 # cursor text
+else
+  printf $printf_template_var 10 $color_foreground
+  printf $printf_template_var 11 $color_background
+  printf $printf_template_var 12 $color_cursor
+fi
+
+# clean up
+unset printf_template
+unset printf_template_var
+unset color00
+unset color01
+unset color02
+unset color03
+unset color04
+unset color05
+unset color06
+unset color07
+unset color08
+unset color09
+unset color10
+unset color11
+unset color12
+unset color13
+unset color14
+unset color15
+unset color16
+unset color17
+unset color18
+unset color19
+unset color20
+unset color21
+unset color_foreground
+unset color_background
+unset color_cursor
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I use a modified Agnoster theme, which changes the prompt slighlty, available
+on my dotfiles.&lt;/p&gt;
+
+&lt;p&gt;Also install &lt;code class=&quot;highlighter-rouge&quot;&gt;tmux&lt;/code&gt; and add&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;codehilite&quot;&gt;&lt;code&gt;alias tmux=&quot;TERM=screen-256color-bce tmux -u&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;to your &lt;code class=&quot;highlighter-rouge&quot;&gt;zshrc&lt;/code&gt; to make Unicode characters and colours display correctly.&lt;/p&gt;
+
+&lt;p&gt;Modify the &lt;code class=&quot;highlighter-rouge&quot;&gt;tmux.conf&lt;/code&gt;, just like your &lt;code class=&quot;highlighter-rouge&quot;&gt;vimrc&lt;/code&gt; to configure the look and
+behaviour.&lt;/p&gt;
+
+&lt;div id=&quot;git&quot; class=&quot;post-section&quot;&gt;Git&lt;/div&gt;
+
+&lt;p&gt;I use &lt;code class=&quot;highlighter-rouge&quot;&gt;Git&lt;/code&gt; as my version control system. Install &lt;code class=&quot;highlighter-rouge&quot;&gt;gitk&lt;/code&gt;, which gives a nice
+GUI to the commands.&lt;/p&gt;
+
+&lt;p&gt;Finally, you get this to work with&lt;/p&gt;
+
+&lt;p&gt;&lt;img id=&quot;showcase&quot; src=&quot;/img/final_dev.png&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 23 Jan 2016 12:58:09 +0000</pubDate>
+        <link>https://shikharbhardwaj.me/2016/01/23/development-environment.html</link>
+        <guid isPermaLink="true">https://shikharbhardwaj.me/2016/01/23/development-environment.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Dynamic programming</title>
+        <description>&lt;div id=&quot;intro&quot; class=&quot;post-section&quot;&gt;Introduction&lt;/div&gt;
+&lt;p&gt;Dynamic programming is an algorithm &lt;strong&gt;design&lt;/strong&gt; technique used to obtain a
+solution by doing a careful brute-force. It involves dividing the problem into
+subproblems, computing the results just once and reusing the computations. It
+usually finds use in problems where trying each outcome is the only option.
+Optimization problems are common examples of such situations, where the final
+answer cannot be computed by local analysis. Overlapping subproblems and an
+optimal substructure are the requirements for an optimization problem  to be
+solvable by a DP. As a problem can have many ways of obtaining optimal values,
+solving a problem usually involves finding &lt;em&gt;the&lt;/em&gt; optimal value.&lt;/p&gt;
+&lt;div id=&quot;preq&quot; class=&quot;post-section&quot;&gt;Prerequisites&lt;/div&gt;
+&lt;p&gt;Knowing the following stuff will help you follow along the text and implement
+the problems:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Writing subroutines(functions) and accessing memory in any programming
+language(I will be using C++)&lt;/li&gt;
+  &lt;li&gt;Divide and conquer&lt;/li&gt;
+  &lt;li&gt;Computational complexity analysis&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div id=&quot;what&quot; class=&quot;post-section&quot;&gt;Overlapping what?&lt;/div&gt;
+&lt;p&gt;Identifying the &lt;strong&gt;subproblems&lt;/strong&gt; and their relations with the other subproblems
+are the most important steps to devising a DP. The solutions 
+to the subproblems are the called the &lt;strong&gt;state&lt;/strong&gt; of the DP. There are two
+approaches to this :&lt;/p&gt;
+
+&lt;h4 id=&quot;top-down&quot;&gt;Top down&lt;/h4&gt;
+&lt;p&gt;This seems to me the most natural way of breaking down a complex problem. Here,
+we see the problem as a whole and find the subproblems on which this solution
+depends on. We go on to find the solution to those subproblems, coming back
+later to compute the current solution. This is exactly the approach used in
+divide and conquer. However, here the subproblems are not disjoint, so a
+straightforward divide and conquer algorithm will be recalculating the values
+for the same subproblems again and again, often leading to exponential time
+solutions. To overcome this issue, we use a technique called &lt;strong&gt;memoization&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Memoizing an algorithm simply saves the result of a particular subproblem in a
+data structure indexed by a unique property associated with each subproblem.
+Before going on the compute the solution of the problem &lt;em&gt;the hard way&lt;/em&gt;, we first
+check to see if the problem has already been solved. If yes, we return the
+answer, without having to compute it again. Otherwise we compute the answer, and
+save it in the data structure for use by other subproblems.&lt;/p&gt;
+
+&lt;p&gt;A common way of solving a DP using a top-down approach is to first devise a
+divide and conquer solution to prove correctness. After the correct divide and
+conquer algorithm is found, memoization is used to speed up the algorithm. This
+results in a recursive, memoized algorithm.&lt;/p&gt;
+
+&lt;p&gt;Computational complexity analysis is done by finding the number of distinct
+subproblems and them multiplying it with the time taken per subproblem, ignoring
+the recursion. The time per subproblem is the time taken to retrieve the
+solutions for the subproblems which the problem depends on.&lt;/p&gt;
+
+&lt;center&gt;Time taken = Number of subproblems x Time per subproblem&lt;/center&gt;
+
+&lt;h4 id=&quot;bottom-up&quot;&gt;Bottom up&lt;/h4&gt;
+&lt;p&gt;This technique explicitly uses the interdependence of the subproblems to devise
+a solution. Here, we first solve the &lt;strong&gt;bottom&lt;/strong&gt; problems, ie.  the ones whose
+solution does not depend on other subproblems(this is often the base case of the
+top down solution). Then, we solve the problems in a sequence such that each
+subproblem which the current problem depends on has already been solved.&lt;/p&gt;
+
+&lt;p&gt;A Directed Acyclic Graph indicating the interdependence of the subproblems on
+each other, called as a Dependency graph, is quite helpful in arriving at a
+bottom up solution. It usually is a straightforward iterative solution. The
+notion of &lt;strong&gt;state&lt;/strong&gt; is more pronounced in this technique as the result of the
+next state is calculated from the previous states.&lt;/p&gt;
+
+&lt;p&gt;Computational complexity analysis is quite trivial, as the solutions are
+iterative.&lt;/p&gt;
+
+&lt;div id=&quot;coins&quot; class=&quot;post-section&quot;&gt;Bytelandian gold coins&lt;/div&gt;
+&lt;p&gt;Now we look at the first problem and its solution using both the techniques.
+This problem is from SPOJ, &lt;a href=&quot;http://www.spoj.com/problems/COINS/&quot;&gt;here&lt;/a&gt;. This is
+an optimization problem, listed as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Input&lt;/strong&gt;:  An integer N, which is the value printed on the coin we are
+            given.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Output&lt;/strong&gt;: The maximum amount of money that we can get by exchanging a coin
+            of value N with 3 coins having value N/2, N/3 and N/4 (all values
+            rounded down to integers)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We realise that trying each exchange and finding the  optimum value from each 
+exchange possible is the solution to the question. As a higher coin can be
+exchanged for lower values, we can see that subproblems overlap across the
+instances of the problem, and optimal solutions of subproblems can be combined
+to get the optimal solution to the original problem.&lt;/p&gt;
+
+&lt;p&gt;Devising a recursive divide and conquer solution, we get the follwing recurrence :&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;codehilite&quot;&gt;&lt;code&gt;max-revenue(i) = max(max-revenue(i/2) + max-revenue(i/3) + max-revenue(i/4), i)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;ie. we either chose to trade the coin for the lower values or keep it as it is.&lt;/p&gt;
+
+&lt;p&gt;First we solve this problem using the top down approach, implementing a program 
+for this brute-force(divide and conquer) algorithm :&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;int max_revenue(int n){
+    if ( n == 0 ){
+        return 0;
+    }
+    return std::max(max_revenue(n/2) + max_revenue(n/3) + max_revenue(n/4), n);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This gives the correct answer, but is costly. Analayzing the computational 
+complexity, we get :&lt;/p&gt;
+
+&lt;center&gt;T(n) ∈ O(n&lt;sup&gt;1.584&lt;/sup&gt;)&lt;/center&gt;
+
+&lt;p&gt;It is a polynomial time solution with the highest order term in the polynomial
+being c.n&lt;sup&gt;log&lt;sub&gt;2&lt;/sub&gt;3&lt;/sup&gt;. If we want to improve this solution
+further, we are going to need a dynamic programming.&lt;/p&gt;
+
+&lt;p&gt;To make the divide and conquer solution faster, we simply memoize the results
+and reuse the computations. Here, we need to be careful of the fact that the
+constraints of the problem specify that 1 &amp;lt;= N &amp;lt;= 10&lt;sup&gt;9&lt;/sup&gt;. Simply
+declaring an array indexed by coin value with 10&lt;sup&gt;9&lt;/sup&gt; is going to
+require 4GB of memory, which is unfeasable.&lt;/p&gt;
+
+&lt;p&gt;We go for middle ground.&lt;/p&gt;
+
+&lt;p&gt;We declare an array of size 10&lt;sup&gt;5&lt;/sup&gt; elements and memoize results of
+coins of size upto that size only. As is the nature of the problem, the base
+cases of the recursion are &lt;em&gt;hot&lt;/em&gt; ie. they need to be queried again and again,
+whereas the higher values are queried only a few times. Having an answer to a
+lower valued solution makes the solution more faster than having the solution
+to a higher value, as the number of times the smaller valued solution is more
+than the higher values.&lt;/p&gt;
+
+&lt;p&gt;Implementing a memo in the divide and conquer, we get the final solution :&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+#include &amp;lt;array&amp;gt;
+std::array&amp;lt;long, 100001&amp;gt; optimal_revenues;
+long long max_revenue(long long n){
+    if ( n == 0 ){
+        return 0;
+    }
+    if ( n &amp;lt;= 100000 ){
+        if ( optimal_revenues[n] == -1 ){
+            optimal_revenues[n] =  std::max(max_revenue(n/2) + max_revenue(n/3) + 
+                                            max_revenue(n/4), n);
+        }
+        return optimal_revenues[n];
+    }
+    return std::max(max_revenue(n/2) + max_revenue(n/3) + max_revenue(n/4), n);
+}
+int main(){
+    std::ios_base::sync_with_stdio(false); //Faster IO
+    //Initialize the array with -1
+    std::generate(optimal_revenues.begin(), optimal_revenues.end(), 
+                    []{ return -1; });
+    optimal_revenues[0] = 0;
+    long long n;
+    while ( std::cin&amp;gt;&amp;gt;n ){
+        std::cout&amp;lt;&amp;lt;max_revenue(n)&amp;lt;&amp;lt;&quot;\n&quot;;
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;
+(The choice of the datatype &lt;code class=&quot;highlighter-rouge&quot;&gt;long long&lt;/code&gt; is not coincidental. There were issues
+with overflow and some frustration involved.)&lt;/p&gt;
+
+&lt;p&gt;This problem is a gentle introduction to the basic design principles for
+devising a dynamic programming solution.&lt;/p&gt;
+
+&lt;div id=&quot;edit&quot; class=&quot;post-section&quot;&gt;Edit distance&lt;/div&gt;
+&lt;p&gt;Now let us look at another SPOJ problem, 
+&lt;a href=&quot;http://www.spoj.com/problems/EDIST/&quot;&gt;Edit distance&lt;/a&gt;. It is also a textbook
+problem for explaining dynamic programming. It is stated as follows :&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Input&lt;/strong&gt;:  Two strings A and B, with N uppercase letters (1 &amp;lt;= N &amp;lt;= 2000)&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Output&lt;/strong&gt;: Minimum number of single character operations needed to transform 
+            string A to string B. The operations can be :&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul style=&quot;margin-left:10px;&quot;&gt;
+    &lt;li&gt;Replace a character with a different character&lt;/li&gt;
+    &lt;li&gt;Delete a character from string A&lt;/li&gt;
+    &lt;li&gt;Insert a character in string A&lt;/li&gt;
+&amp;lt;/div&amp;gt;
+&lt;br /&gt;
+Similar to the previous solution, we devise a top down approach to solve this 
+problem. Observe that smaller instances of the problem exist in the suffixes
+of the strings. So, recursively making the three decisions for the suffixes 
+of the strings, and saving the results in a memo table give us the required 
+solution to the problem.
+&lt;br /&gt;
+&lt;br /&gt;
+Note that we need to take care at the edge cases of the problem. One approach
+could be to use sentinel values. I use conditionals at border conditions to 
+avoid meaningless calls. 
+&lt;br /&gt;
+&lt;br /&gt;
+Here is my solution to the problem : 
+
+&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;// Solution to SPOJ : Edit distance
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;array&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+enum cost_table{ rep = 1, del = 1, ins = 1 };
+std::string A, B;
+std::array&amp;lt;std::array&amp;lt;int, 2048&amp;gt;, 2048&amp;gt; costs; //Memo table
+int cost_rep(char A, char B){
+    if( A == B ){
+        //If the same char, no cost
+        return 0;
+    }
+    return cost_table::rep;
+}
+int min_cost(size_t i, size_t j){
+    //Limit out of boundary calls
+    if( costs[i][j] != -1){
+        return costs[i][j];
+    }
+    if( i == A.size()-1 || j == B.size() - 1 ){
+        //Handle walls here
+        if( i == A.size() - 1 &amp;amp;&amp;amp; j == B.size() - 1 ){
+            costs[i][j] = cost_rep(A[i], B[j]); //We are done
+        }
+        else if( i == A.size() - 1 ){
+            costs[i][j] = min_cost(i, j+1) + cost_table::del; //Only delete
+        }
+        else if( j == B.size() - 1 ){
+            costs[i][j] = min_cost(i+1, j) + cost_table::ins; //Only insert
+        }
+    }
+    else{
+        costs[i][j] = std::min(min_cost(i+1, j+1) + cost_rep(A[i], B[j]),
+                      std::min(min_cost(i+1, j) + cost_table::ins,
+                               min_cost(i, j+1) + cost_table::del));
+    }
+    return costs[i][j];
+}
+int main(){
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
+    int T;
+    std::cin&amp;gt;&amp;gt;T;
+    while(T--) {
+        std::cin&amp;gt;&amp;gt;A&amp;gt;&amp;gt;B;
+        for( auto &amp;amp;elem : costs ){ elem.fill(-1); }
+        std::cout&amp;lt;&amp;lt;min_cost(0,0)&amp;lt;&amp;lt;&quot;\n&quot;;
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/ul&gt;
+</description>
+        <pubDate>Tue, 22 Dec 2015 18:09:09 +0000</pubDate>
+        <link>https://shikharbhardwaj.me/2015/12/22/dynamic-programming.html</link>
+        <guid isPermaLink="true">https://shikharbhardwaj.me/2015/12/22/dynamic-programming.html</guid>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

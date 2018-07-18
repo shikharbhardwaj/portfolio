@@ -1,0 +1,125 @@
+/* light is default mode, so pair with general html definition */
+.light {
+  background-color: #fdf6e3;
+  color: #657b83; }
+  .light * {
+    color: #657b83; }
+  .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
+    color: #586e75;
+    border-color: #657b83; }
+  .light a, .light a:active, .light a:visited {
+    color: #586e75; }
+
+.dark {
+  background-color: #002b36;
+  color: #839496; }
+  .dark * {
+    color: #839496; }
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: #93a1a1;
+    border-color: #839496; }
+  .dark a, .dark a:active, .dark a:visited {
+    color: #93a1a1; }
+
+html * {
+  color-profile: sRGB;
+  rendering-intent: auto; }
+
+.post-title {
+  color: #586e75;
+  width: auto; }
+
+.lineno {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background: #fdf6e3; }
+
+header {
+  margin-left: 1em;
+  margin-top: 0.35em; }
+
+nav {
+  text-align: right;
+  position: fixed;
+  right: 0;
+  top: 1em;
+  background: #002b36; }
+
+nav a {
+  padding: 0.5em;
+  display: block;
+  border-bottom: 1px solid white;
+  transition: padding 0.3s; }
+
+nav a:hover {
+  text-decoration: none;
+  padding-right: 1.5em; }
+
+nav a:visited {
+  color: #268bd2; }
+
+.post-content {
+  padding-left: 2.5em;
+  padding-right: 2.5em;
+  color: #657b83; }
+
+#viewport {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  height: auto;
+  top: 0;
+  left: 0;
+  font-family: 'Inconsolata';
+  background: #073642; }
+
+#wrapper {
+  position: relative;
+  display: flex;
+  width: 90%;
+  margin: auto;
+  margin-top: 2em;
+  background: #fdf6e3; }
+
+.post {
+  width: 85%; }
+
+.post-sections {
+  margin-top: 8em;
+  width: 24%; }
+
+#fixed-float {
+  position: fixed;
+  border-left: 1px solid #2aa198;
+  padding-left: 1em;
+  width: 8em; }
+
+#fixed-float a {
+  display: block; }
+
+.post-section {
+  font-size: 1.4em;
+  font-weight: bold; }
+
+@media screen and (max-width: 600px) {
+  #wrapper {
+    width: 100%; }
+
+  .post-content {
+    padding-left: 0.25em;
+    padding-right: 0.25em; }
+
+  .post-sections {
+    display: none; }
+
+  .post {
+    width: 80%;
+    margin-left: 1.25em; }
+
+  header {
+    text-align: center; } }

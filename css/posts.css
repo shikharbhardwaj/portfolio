@@ -1,0 +1,107 @@
+/* light is default mode, so pair with general html definition */
+.light {
+  background-color: #fdf6e3;
+  color: #657b83; }
+  .light * {
+    color: #657b83; }
+  .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
+    color: #586e75;
+    border-color: #657b83; }
+  .light a, .light a:active, .light a:visited {
+    color: #586e75; }
+
+.dark {
+  background-color: #002b36;
+  color: #839496; }
+  .dark * {
+    color: #839496; }
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: #93a1a1;
+    border-color: #839496; }
+  .dark a, .dark a:active, .dark a:visited {
+    color: #93a1a1; }
+
+html * {
+  color-profile: sRGB;
+  rendering-intent: auto; }
+
+header {
+  font-family: 'Inconsolata';
+  text-decoration: underline; }
+
+#filler {
+  display: block;
+  width: 90%; }
+
+#nav {
+  position: fixed;
+  bottom: 0%;
+  left: 50%;
+  transform: translateX(-50%); }
+
+#main {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  width: 90%; }
+
+#grid {
+  position: relative;
+  list-style: none;
+  margin-top: 1em;
+  padding-bottom: 3em;
+  justify-content: space-around;
+  width: 80%;
+  margin-left: 20%; }
+
+li {
+  position: relative;
+  text-align: center;
+  width: 33%;
+  background: #eee8d5;
+  padding: 1px;
+  margin: 5px; }
+
+li a {
+  position: relative;
+  display: block;
+  color: #268bd2;
+  color: #268bd2; }
+
+li a:hover {
+  text-decoration: none; }
+
+li a:hover > #post-title {
+  text-decoration: underline; }
+
+#wrapper {
+  display: flex; }
+
+li a:visited {
+  color: #268bd2; }
+
+li img {
+  background: #002b36; }
+
+#post-description {
+  text-decoration: none;
+  color: #93a1a1; }
+
+#post-description:hover {
+  text-decoration: none;
+  color: #93a1a1; }
+
+@media screen and (max-width: 443px) {
+  #nav a {
+    padding: 0.2em; }
+
+  #nav {
+    margin-left: -6.2em; }
+
+  .linktext {
+    display: none; }
+
+  #grid {
+    margin-bottom: 2em; }
+
+  .shown {
+    width: 67%; } }

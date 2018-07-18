@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>M is for measure</title>
+    <meta name="description" content="Get up and running with a powerful performance measurement tool forbenchmarking your programs">
+    <meta name="keywords" content="perf ubuntu setup libunwind">
+</head>
+
+<body>
+<link rel = "stylesheet" href = "/css/post.css">
+<link rel = "stylesheet" href = "/css/iconset/foundation-icons.css">
+<div id = "viewport">
+  <div id = "wrapper">
+    <div class="post" itemscope itemtype="http://schema.org/BlogPosting">
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">M is for measure</h1>
+        <p class="post-meta"><time datetime="2016-05-31T18:00:39+00:00" itemprop="datePublished">May 31, 2016</time></p>
+      </header>
+
+      <div class="post-content" itemprop="articleBody">
+        <p>The first principle of performance benchmarking is to <strong>measure</strong>. Knowing your
+current level of performance and setting goals is essential to
+writing performant software on any platform.
+This article is to guide you through setting up <code class="highlighter-rouge">perf</code> on Linux and using it to
+measure stuff.</p>
+<div id="setup" class="post-section">Setup</div>
+<p>The <code class="highlighter-rouge">linux-tools</code> package has the <code class="highlighter-rouge">perf</code> tool. It is usually present in almost
+every distribution because the code is part of the Linux source tree.</p>
+
+<ul>
+  <li>Ubuntu &amp; Debian</li>
+</ul>
+
+<p>For <code class="highlighter-rouge">Ubuntu</code> and <code class="highlighter-rouge">Debian</code> users, use <code class="highlighter-rouge">apt-get</code> to install the package.</p>
+
+<p><strong>CAUTION</strong>: As of now, the Ubuntu package on Xenial Xerus(16.04) does not have
+<code class="highlighter-rouge">libunwind</code> support. If you want C++ symbols to be demangled within perf, skip
+this part and follow the steps to compile <code class="highlighter-rouge">perf</code> manually with proper
+dependencies.</p>
+<pre><code class="shell">$ sudo apt-get install linux-tools-generic</code></pre>
+
+<ul>
+  <li>Fedora</li>
+</ul>
+
+<pre><code class="shell">$ sudo yum install perf</code></pre>
+
+<div id="missing-libunwind" class="post-section">Fixing missing
+libunwind</div>
+
+<p>According to <a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1248289">this</a> bug report, the <code class="highlighter-rouge">perf</code> on Ubuntu 16.04 is not compiled with
+<code class="highlighter-rouge">libunwind</code> support. The library is responsible for demangling C++ names in the
+program binary to the source names.</p>
+
+<p>To fix this, we need to compile our version of <code class="highlighter-rouge">perf</code>.</p>
+
+<ol>
+  <li>
+    <p>Install dependencies:</p>
+
+    <pre><code class="shell">$ sudo apt-get install libiberty-dev
+ binutils-dev</code></pre>
+  </li>
+  <li>
+    <p>Make a directory and enter it:</p>
+
+    <pre><code class="shell">$ mkdir ~/install &amp;&amp; cd ~/install</code></pre>
+  </li>
+  <li>
+    <p>Get the source and build dependencies:</p>
+
+    <p>This will download the Linux source tree(around 140MB), and some
+ dependencies.</p>
+
+    <pre><code class="shell">$ apt-get source linux-tools-`uname -r`</code></pre>
+
+    <pre><code class="shell">$ sudo apt-get build-dep linux-tools-`uname -r`</code></pre>
+  </li>
+  <li>
+    <p>Go to <code class="highlighter-rouge">perf</code> source code:</p>
+
+    <p>It is located in <code class="highlighter-rouge">linux-x.y.z/tools/perf</code>, x, y and z are integers depending
+ on your version of the Linux kernel.</p>
+  </li>
+  <li>
+    <p>Resolve dependencies and compile</p>
+
+    <p>When in the <code class="highlighter-rouge">perf</code> directory, execute</p>
+
+    <pre><code class="shell">$ make</code></pre>
+
+    <p>It will check for dependencies and report missing ones.</p>
+
+    <p>Cancel the build process and install the missing stuff.</p>
+
+    <p>After resolving dependencies, compile the tool by running <code class="highlighter-rouge">make</code> again.</p>
+  </li>
+  <li>
+    <p>Setup the binary</p>
+
+    <p>Go to a path which is added to your $PATH environment variable and make a
+ symbolic link to the built binary. To verify, open terminal and type</p>
+
+    <pre><code class="shell">$ which perf</code></pre>
+
+    <p>It should report the path where you kept the symbolic link(or the binary).</p>
+  </li>
+</ol>
+
+<div id="measure" class="post-section">Measuring with perf</div>
+
+<p>Read the <a href="https://perf.wiki.kernel.org/index.php/Tutorial"> perf wiki </a> to
+get a thorough introduction to the tool from its authors.</p>
+
+<p>Another important resource for C++ users is Chandler Carruth’s talk at
+CppCon 2015 on <a href="https://www.youtube.com/watch?v=nXaxk27zwlk">Tuning C++</a>.</p>
+
+
+      </div>
+    </div>
+    <div class = 'post-sections'>
+      Sections
+      <div id = "fixed-float">
+        
+          <a href = "#setup">Setup</a>
+        
+          <a href = "#missing-libunwind">Fixing missing libunwind</a>
+        
+          <a href = "#measure">Measuring with perf</a>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<nav id = "float-nav">
+  <a id = "linkbox" class = "fi-home -size-72" href = "/"></a>
+  <a id = "linkbox" class = "fi-page-multiple size-72" href = "/posts"></a>
+  <a id = "linkbox" class = "fi-torso size-72" href = "/about"></a>
+  <a id = "linkbox" class = "fi-wrench size-72" href = "/projects"></a>
+</nav>
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/foundation.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/solarized-dark.min.css">
+<link rel="canonical" href="https://shikharbhardwaj.me/2016/05/31/using-perf.html">
+<link rel="alternate" type="application/rss+xml" title="Shikhar Bhardwaj | bluefog" href="https://shikharbhardwaj.me/feed.xml">
+
+<script type="text/javascript" charset="utf-8" src="/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/foundation.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/plugins/CSSPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/easing/EasePack.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+</body>

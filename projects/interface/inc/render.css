@@ -1,0 +1,38 @@
+@font-face{
+    font-family: head;
+    src:url("../inc/font/roboto/robotor.ttf");
+    font-weight: bold;
+}
+body{
+	overflow-x:	hidden;
+	font-family: head;
+}
+table, th, td {
+   border: 3px solid black;
+}
+td{
+	text-align:center;
+}
+table {
+    border-collapse: collapse;
+    width: 70%;
+}
+th {
+    height: auto;
+}
+img {
+    height: 15%;
+    width: 15%;
+    float: left;
+}
+#logo{
+    height: 30%;
+    width: 50%;
+    float: center;
+}
+.namei{
+    text-decoration: underline;
+}
+.btn{
+    padding:10px; 
+}

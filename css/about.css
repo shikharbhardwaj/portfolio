@@ -1,0 +1,90 @@
+/* light is default mode, so pair with general html definition */
+.light {
+  background-color: #fdf6e3;
+  color: #657b83; }
+  .light * {
+    color: #657b83; }
+  .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
+    color: #586e75;
+    border-color: #657b83; }
+  .light a, .light a:active, .light a:visited {
+    color: #586e75; }
+
+.dark {
+  background-color: #002b36;
+  color: #839496; }
+  .dark * {
+    color: #839496; }
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: #93a1a1;
+    border-color: #839496; }
+  .dark a, .dark a:active, .dark a:visited {
+    color: #93a1a1; }
+
+html * {
+  color-profile: sRGB;
+  rendering-intent: auto; }
+
+a, a:active, a:visited, code.url {
+  color: #268bd2; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: #268bd2; }
+
+body {
+  font-family: 'Inconsolata';
+  color: #268bd2; }
+
+#terminal {
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  background: #073642; }
+
+.nojs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #073642; }
+
+.section {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.0625em;
+  color: #fdf6e3; }
+
+.content {
+  display: block;
+  padding-left: 4em; }
+
+#manpage {
+  background: #073642;
+  padding: 5px; }
+
+ul {
+  list-style: none; }
+
+li:before {
+  content: "- "; }
+
+li {
+  padding-left: 8em; }
+
+a {
+  color: #2aa198; }
+
+a:visited {
+  color: #2aa198; }
+
+a:hover {
+  color: #2aa198; }
+
+.nav-footer a {
+  padding-right: 5px;
+  border-right: 1px solid white; }

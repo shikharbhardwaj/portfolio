@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dynamic programming</title>
+    <meta name="description" content="Understand the concept of dynamic programming and learn to apply this powerful technique to solve problems.">
+    <meta name="keywords" content="shikhar bhardwaj bluefog">
+</head>
+
+<body>
+<link rel = "stylesheet" href = "/css/post.css">
+<link rel = "stylesheet" href = "/css/iconset/foundation-icons.css">
+<div id = "viewport">
+  <div id = "wrapper">
+    <div class="post" itemscope itemtype="http://schema.org/BlogPosting">
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Dynamic programming</h1>
+        <p class="post-meta"><time datetime="2015-12-22T18:09:09+00:00" itemprop="datePublished">Dec 22, 2015</time></p>
+      </header>
+
+      <div class="post-content" itemprop="articleBody">
+        <div id="intro" class="post-section">Introduction</div>
+<p>Dynamic programming is an algorithm <strong>design</strong> technique used to obtain a
+solution by doing a careful brute-force. It involves dividing the problem into
+subproblems, computing the results just once and reusing the computations. It
+usually finds use in problems where trying each outcome is the only option.
+Optimization problems are common examples of such situations, where the final
+answer cannot be computed by local analysis. Overlapping subproblems and an
+optimal substructure are the requirements for an optimization problem  to be
+solvable by a DP. As a problem can have many ways of obtaining optimal values,
+solving a problem usually involves finding <em>the</em> optimal value.</p>
+<div id="preq" class="post-section">Prerequisites</div>
+<p>Knowing the following stuff will help you follow along the text and implement
+the problems:</p>
+
+<ul>
+  <li>Writing subroutines(functions) and accessing memory in any programming
+language(I will be using C++)</li>
+  <li>Divide and conquer</li>
+  <li>Computational complexity analysis</li>
+</ul>
+
+<div id="what" class="post-section">Overlapping what?</div>
+<p>Identifying the <strong>subproblems</strong> and their relations with the other subproblems
+are the most important steps to devising a DP. The solutions 
+to the subproblems are the called the <strong>state</strong> of the DP. There are two
+approaches to this :</p>
+
+<h4 id="top-down">Top down</h4>
+<p>This seems to me the most natural way of breaking down a complex problem. Here,
+we see the problem as a whole and find the subproblems on which this solution
+depends on. We go on to find the solution to those subproblems, coming back
+later to compute the current solution. This is exactly the approach used in
+divide and conquer. However, here the subproblems are not disjoint, so a
+straightforward divide and conquer algorithm will be recalculating the values
+for the same subproblems again and again, often leading to exponential time
+solutions. To overcome this issue, we use a technique called <strong>memoization</strong>.</p>
+
+<p>Memoizing an algorithm simply saves the result of a particular subproblem in a
+data structure indexed by a unique property associated with each subproblem.
+Before going on the compute the solution of the problem <em>the hard way</em>, we first
+check to see if the problem has already been solved. If yes, we return the
+answer, without having to compute it again. Otherwise we compute the answer, and
+save it in the data structure for use by other subproblems.</p>
+
+<p>A common way of solving a DP using a top-down approach is to first devise a
+divide and conquer solution to prove correctness. After the correct divide and
+conquer algorithm is found, memoization is used to speed up the algorithm. This
+results in a recursive, memoized algorithm.</p>
+
+<p>Computational complexity analysis is done by finding the number of distinct
+subproblems and them multiplying it with the time taken per subproblem, ignoring
+the recursion. The time per subproblem is the time taken to retrieve the
+solutions for the subproblems which the problem depends on.</p>
+
+<center>Time taken = Number of subproblems x Time per subproblem</center>
+
+<h4 id="bottom-up">Bottom up</h4>
+<p>This technique explicitly uses the interdependence of the subproblems to devise
+a solution. Here, we first solve the <strong>bottom</strong> problems, ie.  the ones whose
+solution does not depend on other subproblems(this is often the base case of the
+top down solution). Then, we solve the problems in a sequence such that each
+subproblem which the current problem depends on has already been solved.</p>
+
+<p>A Directed Acyclic Graph indicating the interdependence of the subproblems on
+each other, called as a Dependency graph, is quite helpful in arriving at a
+bottom up solution. It usually is a straightforward iterative solution. The
+notion of <strong>state</strong> is more pronounced in this technique as the result of the
+next state is calculated from the previous states.</p>
+
+<p>Computational complexity analysis is quite trivial, as the solutions are
+iterative.</p>
+
+<div id="coins" class="post-section">Bytelandian gold coins</div>
+<p>Now we look at the first problem and its solution using both the techniques.
+This problem is from SPOJ, <a href="http://www.spoj.com/problems/COINS/">here</a>. This is
+an optimization problem, listed as follows:</p>
+
+<ul>
+  <li><strong>Input</strong>:  An integer N, which is the value printed on the coin we are
+            given.</li>
+  <li><strong>Output</strong>: The maximum amount of money that we can get by exchanging a coin
+            of value N with 3 coins having value N/2, N/3 and N/4 (all values
+            rounded down to integers)</li>
+</ul>
+
+<p>We realise that trying each exchange and finding the  optimum value from each 
+exchange possible is the solution to the question. As a higher coin can be
+exchanged for lower values, we can see that subproblems overlap across the
+instances of the problem, and optimal solutions of subproblems can be combined
+to get the optimal solution to the original problem.</p>
+
+<p>Devising a recursive divide and conquer solution, we get the follwing recurrence :</p>
+
+<div class="highlighter-rouge"><pre class="codehilite"><code>max-revenue(i) = max(max-revenue(i/2) + max-revenue(i/3) + max-revenue(i/4), i)
+</code></pre></div>
+
+<p>ie. we either chose to trade the coin for the lower values or keep it as it is.</p>
+
+<p>First we solve this problem using the top down approach, implementing a program 
+for this brute-force(divide and conquer) algorithm :</p>
+<pre><code class="cpp">int max_revenue(int n){
+    if ( n == 0 ){
+        return 0;
+    }
+    return std::max(max_revenue(n/2) + max_revenue(n/3) + max_revenue(n/4), n);
+}
+</code></pre>
+
+<p>This gives the correct answer, but is costly. Analayzing the computational 
+complexity, we get :</p>
+
+<center>T(n) ∈ O(n<sup>1.584</sup>)</center>
+
+<p>It is a polynomial time solution with the highest order term in the polynomial
+being c.n<sup>log<sub>2</sub>3</sup>. If we want to improve this solution
+further, we are going to need a dynamic programming.</p>
+
+<p>To make the divide and conquer solution faster, we simply memoize the results
+and reuse the computations. Here, we need to be careful of the fact that the
+constraints of the problem specify that 1 &lt;= N &lt;= 10<sup>9</sup>. Simply
+declaring an array indexed by coin value with 10<sup>9</sup> is going to
+require 4GB of memory, which is unfeasable.</p>
+
+<p>We go for middle ground.</p>
+
+<p>We declare an array of size 10<sup>5</sup> elements and memoize results of
+coins of size upto that size only. As is the nature of the problem, the base
+cases of the recursion are <em>hot</em> ie. they need to be queried again and again,
+whereas the higher values are queried only a few times. Having an answer to a
+lower valued solution makes the solution more faster than having the solution
+to a higher value, as the number of times the smaller valued solution is more
+than the higher values.</p>
+
+<p>Implementing a memo in the divide and conquer, we get the final solution :</p>
+
+<pre><code class="cpp">#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;array&gt;
+std::array&lt;long, 100001&gt; optimal_revenues;
+long long max_revenue(long long n){
+    if ( n == 0 ){
+        return 0;
+    }
+    if ( n &lt;= 100000 ){
+        if ( optimal_revenues[n] == -1 ){
+            optimal_revenues[n] =  std::max(max_revenue(n/2) + max_revenue(n/3) + 
+                                            max_revenue(n/4), n);
+        }
+        return optimal_revenues[n];
+    }
+    return std::max(max_revenue(n/2) + max_revenue(n/3) + max_revenue(n/4), n);
+}
+int main(){
+    std::ios_base::sync_with_stdio(false); //Faster IO
+    //Initialize the array with -1
+    std::generate(optimal_revenues.begin(), optimal_revenues.end(), 
+                    []{ return -1; });
+    optimal_revenues[0] = 0;
+    long long n;
+    while ( std::cin&gt;&gt;n ){
+        std::cout&lt;&lt;max_revenue(n)&lt;&lt;"\n";
+    }
+}</code></pre>
+<p><br />
+(The choice of the datatype <code class="highlighter-rouge">long long</code> is not coincidental. There were issues
+with overflow and some frustration involved.)</p>
+
+<p>This problem is a gentle introduction to the basic design principles for
+devising a dynamic programming solution.</p>
+
+<div id="edit" class="post-section">Edit distance</div>
+<p>Now let us look at another SPOJ problem, 
+<a href="http://www.spoj.com/problems/EDIST/">Edit distance</a>. It is also a textbook
+problem for explaining dynamic programming. It is stated as follows :</p>
+
+<ul>
+  <li><strong>Input</strong>:  Two strings A and B, with N uppercase letters (1 &lt;= N &lt;= 2000)</li>
+  <li><strong>Output</strong>: Minimum number of single character operations needed to transform 
+            string A to string B. The operations can be :</li>
+</ul>
+<ul style="margin-left:10px;">
+    <li>Replace a character with a different character</li>
+    <li>Delete a character from string A</li>
+    <li>Insert a character in string A</li>
+&lt;/div&gt;
+<br />
+Similar to the previous solution, we devise a top down approach to solve this 
+problem. Observe that smaller instances of the problem exist in the suffixes
+of the strings. So, recursively making the three decisions for the suffixes 
+of the strings, and saving the results in a memo table give us the required 
+solution to the problem.
+<br />
+<br />
+Note that we need to take care at the edge cases of the problem. One approach
+could be to use sentinel values. I use conditionals at border conditions to 
+avoid meaningless calls. 
+<br />
+<br />
+Here is my solution to the problem : 
+
+<pre><code class="cpp">// Solution to SPOJ : Edit distance
+#include &lt;iostream&gt;
+#include &lt;array&gt;
+#include &lt;algorithm&gt;
+enum cost_table{ rep = 1, del = 1, ins = 1 };
+std::string A, B;
+std::array&lt;std::array&lt;int, 2048&gt;, 2048&gt; costs; //Memo table
+int cost_rep(char A, char B){
+    if( A == B ){
+        //If the same char, no cost
+        return 0;
+    }
+    return cost_table::rep;
+}
+int min_cost(size_t i, size_t j){
+    //Limit out of boundary calls
+    if( costs[i][j] != -1){
+        return costs[i][j];
+    }
+    if( i == A.size()-1 || j == B.size() - 1 ){
+        //Handle walls here
+        if( i == A.size() - 1 &amp;&amp; j == B.size() - 1 ){
+            costs[i][j] = cost_rep(A[i], B[j]); //We are done
+        }
+        else if( i == A.size() - 1 ){
+            costs[i][j] = min_cost(i, j+1) + cost_table::del; //Only delete
+        }
+        else if( j == B.size() - 1 ){
+            costs[i][j] = min_cost(i+1, j) + cost_table::ins; //Only insert
+        }
+    }
+    else{
+        costs[i][j] = std::min(min_cost(i+1, j+1) + cost_rep(A[i], B[j]),
+                      std::min(min_cost(i+1, j) + cost_table::ins,
+                               min_cost(i, j+1) + cost_table::del));
+    }
+    return costs[i][j];
+}
+int main(){
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
+    int T;
+    std::cin&gt;&gt;T;
+    while(T--) {
+        std::cin&gt;&gt;A&gt;&gt;B;
+        for( auto &amp;elem : costs ){ elem.fill(-1); }
+        std::cout&lt;&lt;min_cost(0,0)&lt;&lt;"\n";
+    }
+}</code></pre>
+
+</ul>
+
+      </div>
+    </div>
+    <div class = 'post-sections'>
+      Sections
+      <div id = "fixed-float">
+        
+          <a href = "#intro">Introduction</a>
+        
+          <a href = "#preq">Prerequisites</a>
+        
+          <a href = "#what">Overlapping what?</a>
+        
+          <a href = "#coins">Bytelandian coins</a>
+        
+          <a href = "#edit">Edit distance</a>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<nav id = "float-nav">
+  <a id = "linkbox" class = "fi-home -size-72" href = "/"></a>
+  <a id = "linkbox" class = "fi-page-multiple size-72" href = "/posts"></a>
+  <a id = "linkbox" class = "fi-torso size-72" href = "/about"></a>
+  <a id = "linkbox" class = "fi-wrench size-72" href = "/projects"></a>
+</nav>
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/foundation.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/solarized-dark.min.css">
+<link rel="canonical" href="https://shikharbhardwaj.me/2015/12/22/dynamic-programming.html">
+<link rel="alternate" type="application/rss+xml" title="Shikhar Bhardwaj | bluefog" href="https://shikharbhardwaj.me/feed.xml">
+
+<script type="text/javascript" charset="utf-8" src="/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/foundation.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/plugins/CSSPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/easing/EasePack.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+</body>
