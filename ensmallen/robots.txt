@@ -1,1 +1,1 @@
-Sitemap: http://localhost:4000/ensmallen/sitemap.xml
+Sitemap: http://www.dyutibarma.github.io/monochrome/ensmallen/sitemap.xml
